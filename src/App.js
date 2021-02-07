@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./App.css";
 
 const styleCss = {
@@ -11,19 +12,57 @@ const styles = ["bold", "italic", "underline"];
 const colors = ["yellow", "blue", "red", "black", "purple"];
 
 function App() {
-  const colorsList = colors.map((color) => (
-    <button style={{ backgroundColor: color, height: 30, width: 30 }}></button>
-  ));
+  const [color, setColor] = useState("");
+
+  const [textStyle, setTextStyle] = useState({
+    bold: null,
+    italic: null,
+    underline: null,
+  });
+
+  const styleText = (style) => {
+    setTextStyle({
+      ...textStyle,
+      [style]: textStyle[style] ? null : styleCss[style],
+    });
+  };
 
   const stylesList = styles.map((style) => (
-    <button style={styleCss[style]}>{style}</button>
+    <button
+      key={style}
+      className={`btn btn-${textStyle[style] ? "dark" : "light"}`}
+      style={{ ...styleCss[style], margin: "0.2rem" }}
+      onClick={() => styleText(style)}
+    >
+      {style}
+    </button>
+  ));
+
+  const colorsList = colors.map((color) => (
+    <button
+      key={color}
+      style={{
+        backgroundColor: color,
+        height: 30,
+        width: 30,
+        margin: "0.2rem",
+      }}
+      onClick={() => setColor(color)}
+    ></button>
   ));
 
   return (
     <div className="App">
-      <div>{stylesList}</div>
-      <textarea />
-      <div>{colorsList}</div>
+      <div className="m-2">{stylesList}</div>
+      <textarea
+        style={{
+          color: color,
+          ...textStyle.bold,
+          ...textStyle.italic,
+          ...textStyle.underline,
+        }}
+      />
+      <div className="m-2">{colorsList}</div>
     </div>
   );
 }
